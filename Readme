@@ -1,4 +1,8 @@
-# Java Currency Converter
+# Compile
+javac SimpleCurrencyConverter.java
+
+# Run
+java SimpleCurrencyConverter# Java Currency Converter
 
 This project contains three versions of a currency converter in Java:
 
