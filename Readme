@@ -1,122 +1,371 @@
-# Compile
-javac SimpleCurrencyConverter.java
+# API-Based Currency Converter - Setup Guide
 
-# Run
-java SimpleCurrencyConverter# Java Currency Converter
+## Overview
 
-This project contains three versions of a currency converter in Java:
+This guide covers how to integrate currency conversion APIs into your Java application. Three implementations are provided, each with increasing complexity and features.
+
+---
 
 ## Files Included
 
-1. **SimpleCurrencyConverter.java** - Basic console version with menu selection
-2. **CurrencyConverterConsole.java** - Advanced console version with validation
-3. **CurrencyConverterGUI.java** - Graphical user interface version using Swing
+1. **APICurrencyConverter.java** - Basic console version with live API
+2. **APICurrencyConverterGUI.java** - GUI version with API integration
+3. **AdvancedAPICurrencyConverter.java** - Advanced version with caching and fallback
 
-## How to Compile and Run
+---
 
-### Prerequisites
-- Java Development Kit (JDK) 8 or higher installed
-- Command line access (Terminal/Command Prompt)
+## Prerequisites
 
-### Compilation
+### 1. Java Development Kit (JDK)
+- JDK 8 or higher required
+- Verify: `java -version`
 
-Open your terminal/command prompt and navigate to the directory containing the files.
+### 2. JSON Library (Required!)
+You need to add the **JSON library** to handle API responses:
 
-**For Simple Console Version:**
+**Option A: Download JAR file**
 ```bash
-javac SimpleCurrencyConverter.java
-java SimpleCurrencyConverter
+# Download org.json library
+Invoke-WebRequest https://repo1.maven.org/maven2/org/json/json/20230227/json-20230227.jar -OutFile json-20230227.jar
+
+# Or download from: https://mvnrepository.com/artifact/org.json/json
 ```
 
-**For Advanced Console Version:**
+**Option B: Use Maven**
+Add to `pom.xml`:
+```xml
+<dependency>
+    <groupId>org.json</groupId>
+    <artifactId>json</artifactId>
+    <version>20230227</version>
+</dependency>
+```
+
+**Option C: Use Gradle**
+Add to `build.gradle`:
+```gradle
+dependencies {
+    implementation 'org.json:json:20230227'
+}
+```
+
+---
+
+## Compilation and Execution
+
+### With JAR file in same directory:
+
 ```bash
-javac CurrencyConverterConsole.java
-java CurrencyConverterConsole
+# Compile
+javac -cp ".;json-20230227.jar" APICurrencyConverter.java
+
+
+# Run
+java -cp ".;json-20230227.jar" APICurrencyConverter
+
 ```
 
-**For GUI Version:**
+### For GUI version:
+
 ```bash
-javac CurrencyConverterGUI.java
-java CurrencyConverterGUI
+javac -cp ".;json-20230227.jar" APICurrencyConverterGUI.java
+
+java -cp ".;json-20230227.jar" APICurrencyConverterGUI
+
 ```
 
-## Features
+### For Advanced version:
 
-### SimpleCurrencyConverter
-- Basic menu-driven interface
-- Supports 5 currencies (USD, EUR, GBP, JPY, INR)
-- Simple one-time conversion
+```bash
+javac -cp ".;json-20230227.jar" AdvancedAPICurrencyConverter.java
 
-### CurrencyConverterConsole
-- Input validation
-- Support for 8 currencies
-- Multiple conversions in one session
-- Error handling
-- User-friendly prompts
+java -cp ".;json-20230227.jar" AdvancedAPICurrencyConverter
 
-### CurrencyConverterGUI
-- Graphical interface
-- Dropdown menus for currency selection
-- Swap button to reverse currencies
-- Real-time conversion
-- Support for 10 currencies
-- Professional look and feel
-
-## Supported Currencies
-
-| Code | Currency | Rate (to USD) |
-|------|----------|---------------|
-| USD  | US Dollar | 1.0 |
-| EUR  | Euro | 0.92 |
-| GBP  | British Pound | 0.79 |
-| JPY  | Japanese Yen | 149.50 |
-| CNY  | Chinese Yuan | 7.24 |
-| INR  | Indian Rupee | 83.12 |
-| CAD  | Canadian Dollar | 1.36 |
-| AUD  | Australian Dollar | 1.53 |
-| CHF  | Swiss Franc | 0.88 |
-| MXN  | Mexican Peso | 17.15 |
-
-## How It Works
-
-The converter uses a two-step conversion process:
-1. Convert the source currency to USD (base currency)
-2. Convert USD to the target currency
-
-**Formula:** `Result = (Amount / FromRate) * ToRate`
-
-## Customization
-
-To update exchange rates or add new currencies:
-
-1. Edit the `exchangeRates` HashMap/variables
-2. Add new currency codes and their rates relative to USD
-3. For GUI version, the new currencies will automatically appear in dropdowns
-
-## Example Usage
-
-**Console Version:**
-```
-Enter source currency code: USD
-Enter target currency code: EUR
-Enter amount to convert: 100
-
-100.00 USD = 92.00 EUR
 ```
 
-**GUI Version:**
-1. Enter amount in the text field
-2. Select source currency from dropdown
-3. Select target currency from dropdown
-4. Click "Convert" button
-5. View result below
+**Note:** On Windows, use `;` instead of `:` in classpath
+```bash
+javac -cp .;json-20230227.jar APICurrencyConverter.java
+java -cp .;json-20230227.jar APICurrencyConverter
+```
 
-## Notes
+---
 
-- Exchange rates are hardcoded and should be updated regularly for real-world use
-- For production use, consider integrating with a live exchange rate API
-- All rates are relative to USD as the base currency
+## Available Currency APIs
+
+### 1. ExchangeRate-API (Used in our code)
+- **URL:** https://www.exchangerate-api.com
+- **Free Tier:** 1,500 requests/month
+- **No API Key Required** for basic endpoint
+- **Endpoint:** `https://api.exchangerate-api.com/v4/latest/{BASE_CURRENCY}`
+- **Currencies:** 160+
+
+**Response Format:**
+```json
+{
+  "base": "USD",
+  "date": "2024-02-12",
+  "rates": {
+    "EUR": 0.92,
+    "GBP": 0.79,
+    "JPY": 149.50
+  }
+}
+```
+
+### 2. Frankfurter (European Central Bank)
+- **URL:** https://www.frankfurter.app
+- **Free:** Unlimited (open source)
+- **No API Key Required**
+- **Endpoint:** `https://api.frankfurter.app/latest?from={BASE}`
+- **Currencies:** 30+ (major currencies)
+
+### 3. Open Exchange Rates
+- **URL:** https://openexchangerates.org
+- **Free Tier:** 1,000 requests/month
+- **API Key:** Required (free signup)
+- **Endpoint:** `https://openexchangerates.org/api/latest.json?app_id={YOUR_API_KEY}`
+- **Currencies:** 200+
+
+**Example with API Key:**
+```java
+private static final String API_URL = "https://openexchangerates.org/api/latest.json?app_id=";
+private static final String API_KEY = "YOUR_API_KEY_HERE";
+
+// In getExchangeRates method:
+String urlString = API_URL + API_KEY + "&base=" + baseCurrency;
+```
+
+### 4. CurrencyAPI
+- **URL:** https://currencyapi.com
+- **Free Tier:** 300 requests/month
+- **API Key:** Required
+- **Currencies:** 150+
+
+### 5. Fixer.io
+- **URL:** https://fixer.io
+- **Free Tier:** 100 requests/month
+- **API Key:** Required
+- **Currencies:** 170+
+
+---
+
+## How to Switch APIs
+
+To switch from the default API to another, modify the API_URL constant:
+
+```java
+// ExchangeRate-API (default - no key needed)
+private static final String API_URL = "https://api.exchangerate-api.com/v4/latest/";
+
+// Frankfurter (no key needed)
+private static final String API_URL = "https://api.frankfurter.app/latest?from=";
+
+// Open Exchange Rates (key required)
+private static final String API_URL = "https://openexchangerates.org/api/latest.json?app_id=YOUR_KEY&base=";
+
+// With API key management
+private static final String API_KEY = "your_api_key_here";
+private static final String API_URL = "https://api.example.com/latest?key=" + API_KEY + "&base=";
+```
+
+---
+
+## Features Comparison
+
+| Feature | Basic Console | GUI | Advanced |
+|---------|--------------|-----|----------|
+| Live Exchange Rates | ✓ | ✓ | ✓ |
+| 150+ Currencies | ✓ | ✓ | ✓ |
+| Input Validation | ✓ | ✓ | ✓ |
+| Graphical Interface | ✗ | ✓ | ✗ |
+| Rate Caching | ✗ | ✗ | ✓ |
+| Multiple API Fallback | ✗ | ✗ | ✓ |
+| Batch Conversion | ✗ | ✗ | ✓ |
+| Swap Currencies | ✗ | ✓ | ✗ |
+
+---
+
+## Code Explanations
+
+### 1. API Request Flow
+
+```java
+// 1. Build URL with base currency
+String urlString = API_URL + "USD";
+
+// 2. Create connection
+URL url = new URL(urlString);
+HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+// 3. Set request method and timeouts
+conn.setRequestMethod("GET");
+conn.setConnectTimeout(5000);
+conn.setReadTimeout(5000);
+
+// 4. Check response code
+if (conn.getResponseCode() == 200) {
+    // Success - read response
+}
+
+// 5. Read response into string
+BufferedReader reader = new BufferedReader(
+    new InputStreamReader(conn.getInputStream())
+);
+
+// 6. Parse JSON
+JSONObject data = new JSONObject(response.toString());
+JSONObject rates = data.getJSONObject("rates");
+```
+
+### 2. Conversion Logic
+
+```java
+// Get rates with source currency as base
+JSONObject data = getExchangeRates("USD");
+JSONObject rates = data.getJSONObject("rates");
+
+// Get exchange rate for target currency
+double exchangeRate = rates.getDouble("EUR");
+
+// Calculate result
+double result = amount * exchangeRate;
+```
+
+### 3. Caching (Advanced Version)
+
+```java
+// Check if cached and not expired
+if (rateCache.containsKey(baseCurrency)) {
+    CachedRates cached = rateCache.get(baseCurrency);
+    if (!cached.isExpired()) {
+        return cached.rates; // Use cached data
+    }
+}
+
+// Fetch fresh data and cache it
+JSONObject freshData = fetchFromAPI(apiUrl);
+rateCache.put(baseCurrency, new CachedRates(freshData, System.currentTimeMillis()));
+```
+
+---
+
+## Error Handling
+
+Common errors and solutions:
+
+### 1. "org.json.JSONObject not found"
+**Solution:** Add JSON library to classpath (see Prerequisites)
+
+### 2. "Connection timeout"
+**Solution:** 
+- Check internet connection
+- Increase timeout: `conn.setConnectTimeout(10000);`
+- Try alternative API
+
+### 3. "Currency code not found"
+**Solution:** Use 3-letter ISO currency codes (USD, EUR, GBP, etc.)
+
+### 4. "API request failed (429)"
+**Solution:** Rate limit exceeded - wait or upgrade API plan
+
+---
+
+## Customization Ideas
+
+### 1. Add Historical Rates
+```java
+// Some APIs support historical data
+String date = "2024-01-01";
+String url = "https://api.frankfurter.app/" + date + "?from=USD";
+```
+
+### 2. Add Cryptocurrency Support
+```java
+// CoinGecko API for crypto
+String cryptoAPI = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd";
+```
+
+### 3. Save Favorite Conversions
+```java
+// Save to file
+Properties favorites = new Properties();
+favorites.setProperty("conversion1", "USD-EUR");
+favorites.store(new FileOutputStream("favorites.properties"), null);
+```
+
+### 4. Add Currency Symbols
+```java
+Map<String, String> symbols = new HashMap<>();
+symbols.put("USD", "$");
+symbols.put("EUR", "€");
+symbols.put("GBP", "£");
+symbols.put("JPY", "¥");
+```
+
+---
+
+## Performance Tips
+
+1. **Use Caching** - Avoid unnecessary API calls (see AdvancedAPICurrencyConverter.java)
+2. **Batch Requests** - Some APIs support multiple currencies in one call
+3. **Handle Failures** - Implement retry logic and fallback APIs
+4. **Local Storage** - Store frequently used rates locally
+
+---
+
+## Best Practices
+
+1. **API Key Security**
+   - Store API keys in environment variables
+   - Never commit API keys to version control
+   
+   ```java
+   String apiKey = System.getenv("CURRENCY_API_KEY");
+   ```
+
+2. **Rate Limiting**
+   - Respect API rate limits
+   - Implement exponential backoff on failures
+   - Cache results when possible
+
+3. **Error Messages**
+   - Provide clear error messages to users
+   - Log errors for debugging
+   - Handle network failures gracefully
+
+4. **Testing**
+   - Test with different currency pairs
+   - Test with invalid inputs
+   - Test network failure scenarios
+
+---
+
+## Troubleshooting
+
+**Q: Compilation fails with "package org.json does not exist"**
+A: Download and include the JSON library in classpath
+
+**Q: No internet connection error**
+A: Check firewall settings, proxy configuration
+
+**Q: SSL/Certificate errors**
+A: Update Java to latest version or configure SSL trust store
+
+**Q: API returns empty rates**
+A: Check if the base currency is supported by the API
+
+---
 
 ## License
 
-Free to use and modify for educational purposes.
+These examples are free to use for educational and commercial purposes.
+
+## Support
+
+For API-specific issues, consult their documentation:
+- ExchangeRate-API: https://www.exchangerate-api.com/docs
+- Frankfurter: https://www.frankfurter.app/docs
+- Open Exchange Rates: https://docs.openexchangerates.org
+
+---
