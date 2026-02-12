@@ -1,0 +1,118 @@
+# Java Currency Converter
+
+This project contains three versions of a currency converter in Java:
+
+## Files Included
+
+1. **SimpleCurrencyConverter.java** - Basic console version with menu selection
+2. **CurrencyConverterConsole.java** - Advanced console version with validation
+3. **CurrencyConverterGUI.java** - Graphical user interface version using Swing
+
+## How to Compile and Run
+
+### Prerequisites
+- Java Development Kit (JDK) 8 or higher installed
+- Command line access (Terminal/Command Prompt)
+
+### Compilation
+
+Open your terminal/command prompt and navigate to the directory containing the files.
+
+**For Simple Console Version:**
+```bash
+javac SimpleCurrencyConverter.java
+java SimpleCurrencyConverter
+```
+
+**For Advanced Console Version:**
+```bash
+javac CurrencyConverterConsole.java
+java CurrencyConverterConsole
+```
+
+**For GUI Version:**
+```bash
+javac CurrencyConverterGUI.java
+java CurrencyConverterGUI
+```
+
+## Features
+
+### SimpleCurrencyConverter
+- Basic menu-driven interface
+- Supports 5 currencies (USD, EUR, GBP, JPY, INR)
+- Simple one-time conversion
+
+### CurrencyConverterConsole
+- Input validation
+- Support for 8 currencies
+- Multiple conversions in one session
+- Error handling
+- User-friendly prompts
+
+### CurrencyConverterGUI
+- Graphical interface
+- Dropdown menus for currency selection
+- Swap button to reverse currencies
+- Real-time conversion
+- Support for 10 currencies
+- Professional look and feel
+
+## Supported Currencies
+
+| Code | Currency | Rate (to USD) |
+|------|----------|---------------|
+| USD  | US Dollar | 1.0 |
+| EUR  | Euro | 0.92 |
+| GBP  | British Pound | 0.79 |
+| JPY  | Japanese Yen | 149.50 |
+| CNY  | Chinese Yuan | 7.24 |
+| INR  | Indian Rupee | 83.12 |
+| CAD  | Canadian Dollar | 1.36 |
+| AUD  | Australian Dollar | 1.53 |
+| CHF  | Swiss Franc | 0.88 |
+| MXN  | Mexican Peso | 17.15 |
+
+## How It Works
+
+The converter uses a two-step conversion process:
+1. Convert the source currency to USD (base currency)
+2. Convert USD to the target currency
+
+**Formula:** `Result = (Amount / FromRate) * ToRate`
+
+## Customization
+
+To update exchange rates or add new currencies:
+
+1. Edit the `exchangeRates` HashMap/variables
+2. Add new currency codes and their rates relative to USD
+3. For GUI version, the new currencies will automatically appear in dropdowns
+
+## Example Usage
+
+**Console Version:**
+```
+Enter source currency code: USD
+Enter target currency code: EUR
+Enter amount to convert: 100
+
+100.00 USD = 92.00 EUR
+```
+
+**GUI Version:**
+1. Enter amount in the text field
+2. Select source currency from dropdown
+3. Select target currency from dropdown
+4. Click "Convert" button
+5. View result below
+
+## Notes
+
+- Exchange rates are hardcoded and should be updated regularly for real-world use
+- For production use, consider integrating with a live exchange rate API
+- All rates are relative to USD as the base currency
+
+## License
+
+Free to use and modify for educational purposes.
