@@ -216,7 +216,7 @@ public class APICurrencyConverter {
                 System.out.println("==========================================");
                 
             } catch (Exception e) {
-                System.out.println("\n❌ Error: " + e.getMessage());
+                System.out.println("\n Error: " + e.getMessage());
                 System.out.println("Please check your internet connection and try again.");
             }
             
